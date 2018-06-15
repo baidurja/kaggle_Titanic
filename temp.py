@@ -37,6 +37,34 @@ X = preprocess( dataset, 0 )
 #X = dataset.iloc[ :, [ 2, 4, 5 ] ].values
 y = dataset.iloc[ :, 1 ].values
 
+
+XX = dataset.values
+pos_indx = [];
+neg_indx = [];
+pos_cnt = 0;
+neg_cnt = 0;
+for k in range( 0, XX.shape[ 0 ] - 1 ):
+    if ( y[ k ] == 0 ):
+        neg_indx.append( k )
+        neg_cnt = neg_cnt + 1
+    else:
+        pos_indx.append( k )
+        pos_cnt = pos_cnt + 1
+            
+col_indx = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ]
+pos_X = XX[ py.ix_( pos_indx, col_indx )]   
+neg_X = XX[ py.ix_( neg_indx, col_indx )]
+
+left_of_first_bin = pos_X[ :, 1 ].min() - 0.5
+right_of_last_bin = pos_X[ :, 1 ].max() + 0.5
+plt.hist( pos_X[ :, 1 ], nbins=3)
+plt.show()
+
+plt.hist( pos_X[ :, 1 ] )
+plt.show()     
+plt.hist( neg_X[ :, 1 ] )
+plt.show()
+
 #from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 #labelencoder_X = LabelEncoder()
 #X[ :, 1 ] = labelencoder_X.fit_transform( X[ :, 1 ] )

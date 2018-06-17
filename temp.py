@@ -30,6 +30,65 @@ def preprocess( data, offset ):
     
     return X
 
+def visualize( data ):
+    XX = dataset.values
+    from sklearn.preprocessing import Imputer
+    imputer = Imputer( missing_values = 'NaN', strategy = 'mean', axis = 0 )
+    X_toscale = XX[ :, 5 ]
+    X_toscale = X_toscale[ :, None ]
+    X_toscale = imputer.fit_transform( X_toscale )
+    X_toscale.shape = XX[ :, 5 ].shape
+    XX[ :, 5 ] = X_toscale
+#    imputer = imputer.fit( XX )
+#    XX = imputer.transform( XX )
+    pos_indx = [];
+    neg_indx = [];
+    pos_cnt = 0;
+    neg_cnt = 0;
+    for k in range( 0, XX.shape[ 0 ] - 1 ):
+        if ( y[ k ] == 0 ):
+            neg_indx.append( k )
+            neg_cnt = neg_cnt + 1
+        else:
+            pos_indx.append( k )
+            pos_cnt = pos_cnt + 1
+                
+    col_indx = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ]
+    pos_X = XX[ py.ix_( pos_indx, col_indx )]   
+    neg_X = XX[ py.ix_( neg_indx, col_indx )]
+    
+    plt.hist( [ pos_X[ :, 8 ].astype( float ), neg_X[ :, 8 ].astype( float ) ], color = [ 'g', 'r' ] )
+    plt.title( 'Fare' )
+    plt.show()
+    plt.hist( [ pos_X[ :, 6 ].astype( float ), neg_X[ :, 6 ].astype( float ) ], color = [ 'g', 'r' ] )
+    plt.title( 'Num of parent or children' )
+    plt.show()
+    plt.hist( [ pos_X[ :, 5 ].astype( float ), neg_X[ :, 5 ].astype( float ) ], color = [ 'g', 'r' ] )
+    plt.title( 'Num of siblings or spouses' )
+    plt.show()
+    plt.hist( [ pos_X[ :, 4 ].astype( float ), neg_X[ :, 4 ].astype( float ) ], color = [ 'g', 'r' ] )
+    plt.title( 'Age' )
+    plt.show()
+#    plt.hist( [ pos_X[ :, 3 ].astype( str ), neg_X[ :, 3 ].astype( str ) ], color = [ 'g', 'r' ] )
+#    plt.title( 'Sex' )
+#    plt.show()
+    plt.hist( [ pos_X[ :, 1 ].astype( float ), neg_X[ :, 1 ].astype( float ) ], color = [ 'g', 'r' ] )
+    plt.title( 'Class' )
+    plt.show()
+    
+    plt.hist( pos_X[ :, 3 ].astype( str ), color = 'green' )
+    plt.title( 'Sex' )
+    plt.show()
+    plt.hist( neg_X[ :, 3 ].astype( str ), color = 'red' )
+    plt.title( 'Sex' )
+    plt.show()
+    plt.hist( pos_X[ :, 10 ].astype( str ), color = 'green' )
+    plt.title( 'Embarked' )
+    plt.show()
+    plt.hist( neg_X[ :, 10 ].astype( str ), color = 'red' )
+    plt.title( 'Embarked' )
+    plt.show()
+
 dataset = pd.read_csv('train.csv')
 dev_dataset = pd.read_csv( 'test.csv' )
 dev_X = preprocess( dev_dataset, -1 )
@@ -37,33 +96,8 @@ X = preprocess( dataset, 0 )
 #X = dataset.iloc[ :, [ 2, 4, 5 ] ].values
 y = dataset.iloc[ :, 1 ].values
 
+visualize( dataset )
 
-XX = dataset.values
-pos_indx = [];
-neg_indx = [];
-pos_cnt = 0;
-neg_cnt = 0;
-for k in range( 0, XX.shape[ 0 ] - 1 ):
-    if ( y[ k ] == 0 ):
-        neg_indx.append( k )
-        neg_cnt = neg_cnt + 1
-    else:
-        pos_indx.append( k )
-        pos_cnt = pos_cnt + 1
-            
-col_indx = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ]
-pos_X = XX[ py.ix_( pos_indx, col_indx )]   
-neg_X = XX[ py.ix_( neg_indx, col_indx )]
-
-left_of_first_bin = pos_X[ :, 1 ].min() - 0.5
-right_of_last_bin = pos_X[ :, 1 ].max() + 0.5
-plt.hist( pos_X[ :, 1 ], nbins=3)
-plt.show()
-
-plt.hist( pos_X[ :, 1 ] )
-plt.show()     
-plt.hist( neg_X[ :, 1 ] )
-plt.show()
 
 #from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 #labelencoder_X = LabelEncoder()
